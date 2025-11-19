@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Review } from '../../services/firestore';
+import type { Review } from '../../types';
 import { useAuth } from '../../hooks/useAuth';
 import { cn } from '../../utils/cn';
 

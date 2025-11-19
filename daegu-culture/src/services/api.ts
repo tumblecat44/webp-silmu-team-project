@@ -1,4 +1,5 @@
 import { API_ENDPOINTS, DAEGU_AREA_CODES, API_LIMITS } from '../utils/constants';
+import type { Event } from '../types';
 
 export interface APIEvent {
   contentid: string;
@@ -28,21 +29,6 @@ export interface APIEvent {
   sponsor2tel: string;
 }
 
-export interface Event {
-  id: string;
-  title: string;
-  category: 'performance' | 'exhibition' | 'festival';
-  date: string;
-  startDate: string;
-  endDate: string;
-  place: string;
-  price: string;
-  image: string;
-  description: string;
-  tel?: string;
-  playtime?: string;
-  ageLimit?: string;
-}
 
 class APIService {
   private readonly baseURL = API_ENDPOINTS.TOUR_API_BASE_URL;

@@ -22,34 +22,11 @@ import {
   deleteObject 
 } from 'firebase/storage';
 import { db, storage } from '../firebase';
-import { Event } from '../types';
+import type { Event, Review, Bookmark } from '../types';
 import toast from 'react-hot-toast';
 
 // 타입 정의
-export interface Bookmark {
-  id: string;
-  userId: string;
-  eventId: string;
-  eventTitle: string;
-  eventImage: string;
-  eventDate: string;
-  category: string;
-  createdAt: Timestamp;
-}
 
-export interface Review {
-  id: string;
-  userId: string;
-  userName: string;
-  userPhoto?: string;
-  eventId: string;
-  eventTitle: string;
-  rating: number;
-  content: string;
-  images?: string[];
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
-}
 
 class FirestoreService {
   // === 북마크 CRUD ===

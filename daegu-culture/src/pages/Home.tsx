@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { apiService } from '../services/api';
-import type { Event } from '../services/api';
+import type { Event } from '../types';
 
 
 export const Home = () => {
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,7 +173,11 @@ export const Home = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {events.map((event) => (
-          <div key={event.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <div 
+            key={event.id} 
+            onClick={() => navigate(`/events/${event.id}`)}
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer transform hover:scale-105"
+          >
             <div className="aspect-[16/9] bg-gray-200 flex items-center justify-center">
               {event.image && event.image !== '/placeholder.jpg' ? (
                 <img 
@@ -228,12 +234,18 @@ export const Home = () => {
               
               <div className="flex gap-2">
                 <button 
-                  onClick={() => window.location.href = `/events/${event.id}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigate(`/events/${event.id}`);
+                  }}
                   className="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-3 rounded transition-colors"
                 >
                   자세히 보기
                 </button>
-                <button className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2 rounded transition-colors">
+                <button 
+                  onClick={(e) => e.stopPropagation()}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2 rounded transition-colors"
+                >
                   🔖
                 </button>
               </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
-import { firestoreService, Bookmark } from '../services/firestore';
-import { Event } from '../types';
+import { firestoreService } from '../services/firestore';
+import type { Event, Bookmark } from '../types';
 
 interface UseBookmarksReturn {
   bookmarks: Bookmark[];

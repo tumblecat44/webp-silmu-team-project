@@ -12,6 +12,9 @@ export interface Event {
   price: string;
   image: string;
   description: string;
+  tel?: string;
+  playtime?: string;
+  ageLimit?: string;
   source?: string; // API 소스 (performance, exhibition, festival)
 }
 

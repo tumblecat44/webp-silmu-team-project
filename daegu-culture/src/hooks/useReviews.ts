@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from './useAuth';
-import { firestoreService, Review } from '../services/firestore';
+import { firestoreService } from '../services/firestore';
+import type { Review } from '../types';
 
 interface CreateReviewParams {
   eventId: string;
