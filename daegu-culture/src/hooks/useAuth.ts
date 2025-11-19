@@ -1,35 +1,112 @@
-import { useState, useEffect, createContext, useContext } from 'react';
-import { User } from '../types';
+import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { type User } from 'firebase/auth';
+import { authService } from '../services/auth';
+import type { UserProfile } from '../services/auth';
 
-// 임시 인증 훅 (Firebase 연동 전)
-export const useAuth = () => {
+interface AuthContextType {
+  user: User | null;
+  userProfile: UserProfile | null;
+  loading: boolean;
+  login: () => Promise<void>;
+  loginWithEmail: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
+  logout: () => Promise<void>;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    // 임시로 로딩 완료 처리
-    setIsLoading(false);
+    const unsubscribe = authService.onAuthStateChanged(async (firebaseUser) => {
+      setUser(firebaseUser);
+      
+      if (firebaseUser) {
+        const profile = await authService.getUserProfile(firebaseUser.uid);
+        setUserProfile(profile);
+      } else {
+        setUserProfile(null);
+      }
+      
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
   }, []);
-  
-  const signIn = async (email: string, password: string) => {
-    // 임시 구현
-    console.log('Sign in:', email, password);
+
+  const login = async () => {
+    try {
+      setLoading(true);
+      await authService.signInWithGoogle();
+    } catch (error) {
+      console.error('로그인 실패:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
-  
-  const signUp = async (email: string, password: string, displayName: string) => {
-    // 임시 구현
-    console.log('Sign up:', email, password, displayName);
+
+  const loginWithEmail = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      await authService.signInWithEmail(email, password);
+    } catch (error) {
+      console.error('이메일 로그인 실패:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
-  
-  const signOut = async () => {
-    setUser(null);
+
+  const signUp = async (email: string, password: string, displayName?: string) => {
+    try {
+      setLoading(true);
+      await authService.signUpWithEmail(email, password, displayName);
+    } catch (error) {
+      console.error('회원가입 실패:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
-  
-  return {
+
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (error) {
+      console.error('로그아웃 실패:', error);
+      throw error;
+    }
+  };
+
+  const value: AuthContextType = {
     user,
-    isLoading,
-    signIn,
+    userProfile,
+    loading,
+    login,
+    loginWithEmail,
     signUp,
-    signOut,
+    logout,
   };
+
+  return React.createElement(
+    AuthContext.Provider,
+    { value },
+    children
+  );
+};
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

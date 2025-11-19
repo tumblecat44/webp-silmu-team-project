@@ -4,10 +4,10 @@ export const API_ENDPOINTS = {
   KOPIS: 'https://www.kopis.or.kr/openApi/restful',
   
   // 문화체육관광부 공공데이터
-  CULTURE_BASE_URL: 'https://apis.data.go.kr/B551011/KorService1',
+  CULTURE_BASE_URL: '/api/B551011/KorService2',
   
   // 한국관광공사 TourAPI
-  TOUR_API_BASE_URL: 'https://apis.data.go.kr/B551011/KorService1',
+  TOUR_API_BASE_URL: '/api/B551011/KorService2',
 } as const;
 
 // 카테고리 상수
