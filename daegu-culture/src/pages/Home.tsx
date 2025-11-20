@@ -152,7 +152,7 @@ export const Home = () => {
             onClick={() => navigate(`/events/${event.id}`)}
             className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer transform hover:scale-105"
           >
-            <div className="aspect-[16/9] bg-gray-200 flex items-center justify-center">
+            <div className="aspect-[16/9] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
               {event.image && event.image !== '/placeholder.jpg' ? (
                 <img 
                   src={event.image} 
@@ -160,11 +160,24 @@ export const Home = () => {
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerHTML = `<span class="text-gray-500">📷 ${t('home.imageAlt')}</span>`;
+                    const placeholder = document.createElement('div');
+                    placeholder.className = 'flex flex-col items-center justify-center text-gray-400 p-4';
+                    placeholder.innerHTML = `
+                      <svg class="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                      </svg>
+                      <span class="text-sm font-medium">${event.title}</span>
+                    `;
+                    e.currentTarget.parentElement!.appendChild(placeholder);
                   }}
                 />
               ) : (
-                <span className="text-gray-500">📷 {t('home.imageAlt')}</span>
+                <div className="flex flex-col items-center justify-center text-gray-400 p-4">
+                  <svg className="w-12 h-12 mb-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-sm font-medium text-center">{event.title}</span>
+                </div>
               )}
             </div>
             

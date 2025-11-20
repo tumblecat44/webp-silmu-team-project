@@ -273,7 +273,7 @@ export const EventDetail = () => {
       {/* 컴팩트한 이벤트 정보 카드 */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
         {/* 이미지 섹션 */}
-        <div className="relative aspect-[2/1] bg-gray-200 flex items-center justify-center">
+        <div className="relative aspect-[2/1] bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
           {event.image && event.image !== '' ? (
             <img 
               src={event.image} 
@@ -281,11 +281,24 @@ export const EventDetail = () => {
               className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement!.innerHTML = `<span class="text-gray-500 text-lg">📷 ${t('home.imageAlt')}</span>`;
+                const placeholder = document.createElement('div');
+                placeholder.className = 'flex flex-col items-center justify-center text-blue-400 p-8';
+                placeholder.innerHTML = `
+                  <svg class="w-16 h-16 mb-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="text-lg font-semibold text-center">${event.title}</span>
+                `;
+                e.currentTarget.parentElement!.appendChild(placeholder);
               }}
             />
           ) : (
-            <span className="text-gray-500 text-lg">📷 {t('home.imageAlt')}</span>
+            <div className="flex flex-col items-center justify-center text-blue-400 p-8">
+              <svg className="w-16 h-16 mb-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+              </svg>
+              <span className="text-lg font-semibold text-center">{event.title}</span>
+            </div>
           )}
           
           {/* 카테고리 뱃지 */}
