@@ -80,7 +80,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
           {/* 설명 */}
           <div className="mb-6 text-center">
             <p className="text-gray-600 mb-4">
-              북마크와 후기 기능을 사용하려면 로그인이 필요합니다
+              후기 기능을 사용하려면 로그인이 필요합니다
             </p>
           </div>
 
