@@ -15,14 +15,15 @@ import {
   onSnapshot,
   Timestamp,
 } from 'firebase/firestore';
-import { 
-  ref, 
-  uploadBytes, 
-  getDownloadURL, 
-  deleteObject 
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject
 } from 'firebase/storage';
 import { db, storage } from '../firebase';
-import type { Event, Review } from '../types';
+import type { Event, Review, Bookmark } from '../types';
+import toast from 'react-hot-toast';
 
 // 타입 정의
 
@@ -237,7 +238,25 @@ class FirestoreService {
         id: doc.id,
         ...doc.data()
       } as Review));
-      
+
+      callback(reviews);
+    });
+  }
+
+  // 사용자 후기 실시간 리스너
+  subscribeToUserReviews(userId: string, callback: (reviews: Review[]) => void) {
+    const q = query(
+      collection(db, 'reviews'),
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+
+    return onSnapshot(q, (querySnapshot) => {
+      const reviews = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Review));
+
       callback(reviews);
     });
   }
