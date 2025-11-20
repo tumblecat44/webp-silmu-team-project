@@ -57,21 +57,21 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
 
   return (
     <div 
-      className="fixed inset-0 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(3px)' }}
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-lg border border-gray-300 shadow-2xl max-w-md w-full"
+        className="w-full max-w-md bg-white border border-gray-300 rounded-lg shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
           {/* 헤더 */}
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-bold text-gray-900">로그인</h2>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-2xl"
+              className="text-2xl text-gray-400 hover:text-gray-600"
             >
               ×
             </button>
@@ -79,7 +79,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
 
           {/* 설명 */}
           <div className="mb-6 text-center">
-            <p className="text-gray-600 mb-4">
+            <p className="mb-4 text-gray-600">
               후기 기능을 사용하려면 로그인이 필요합니다
             </p>
           </div>
@@ -88,11 +88,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
           <button
             onClick={handleGoogleLogin}
             disabled={loading}
-            className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white text-gray-700 font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center justify-center w-full px-4 py-3 font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500 mr-3"></div>
+                <div className="w-5 h-5 mr-3 border-b-2 border-blue-500 rounded-full animate-spin"></div>
                 로그인 중...
               </>
             ) : (
@@ -123,7 +123,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
           {/* 추가 설명 */}
           <div className="mt-4 text-center">
             <p className="text-xs text-gray-500">
-              로그인하면 북마크 및 후기 작성이 가능합니다
+              로그인하면 후기 작성이 가능합니다
             </p>
           </div>
         </div>
