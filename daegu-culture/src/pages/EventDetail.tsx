@@ -231,27 +231,31 @@ export const EventDetail = () => {
 
   const getCategoryLabel = (category: string) => {
     switch (category) {
-      case 'performance':
-        return t('category.performance');
-      case 'exhibition':
-        return t('category.exhibition');
+      case 'tourist':
+        return t('category.tourist');
+      case 'culture':
+        return t('category.culture');
       case 'festival':
         return t('category.festival');
+      case 'travel':
+        return t('category.travel');
       default:
-        return t('category.all');
+        return t('category.festival');
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case 'performance':
-        return 'bg-purple-100 text-purple-800';
-      case 'exhibition':
+      case 'tourist':
+        return 'bg-blue-100 text-blue-800';
+      case 'culture':
         return 'bg-green-100 text-green-800';
       case 'festival':
+        return 'bg-purple-100 text-purple-800';
+      case 'travel':
         return 'bg-orange-100 text-orange-800';
       default:
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -266,9 +270,10 @@ export const EventDetail = () => {
         {t('eventDetail.back')}
       </button>
 
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      {/* 컴팩트한 이벤트 정보 카드 */}
+      <div className="bg-white rounded-lg shadow-md overflow-hidden mb-6">
         {/* 이미지 섹션 */}
-        <div className="relative aspect-[16/9] bg-gray-200 flex items-center justify-center">
+        <div className="relative aspect-[2/1] bg-gray-200 flex items-center justify-center">
           {event.image && event.image !== '' ? (
             <img 
               src={event.image} 
@@ -284,99 +289,59 @@ export const EventDetail = () => {
           )}
           
           {/* 카테고리 뱃지 */}
-          <div className="absolute top-4 left-4">
+          <div className="absolute top-3 left-3">
             <span className={`px-3 py-1 rounded-full text-sm font-medium ${getCategoryColor(event.category)}`}>
               {getCategoryLabel(event.category)}
             </span>
           </div>
         </div>
         
-        <div className="p-8">
-          {/* 제목 */}
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
+        <div className="p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">
             {event.title}
           </h1>
           
-          {/* 행사 정보 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div className="space-y-4">
-              <div>
-                <h3 className="flex items-center font-semibold text-gray-700 mb-2">
-                  <span className="mr-2">📅</span>
-                  {t('eventDetail.date')}
-                </h3>
-                <p className="text-gray-600 ml-6">{event.date}</p>
-              </div>
-              <div>
-                <h3 className="flex items-center font-semibold text-gray-700 mb-2">
-                  <span className="mr-2">📍</span>
-                  {t('eventDetail.location')}
-                </h3>
-                <p className="text-gray-600 ml-6">{event.place}</p>
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center text-gray-600">
+              <span className="mr-2">📍</span>
+              <p className="text-base">{event.place}</p>
             </div>
-            <div className="space-y-4">
-              <div>
-                <h3 className="flex items-center font-semibold text-gray-700 mb-2">
-                  <span className="mr-2">💰</span>
-                  {t('eventDetail.price')}
-                </h3>
-                <p className="text-gray-600 ml-6 font-medium">{event.price}</p>
-              </div>
-              {event.tel && (
-                <div>
-                  <h3 className="flex items-center font-semibold text-gray-700 mb-2">
-                    <span className="mr-2">📞</span>
-                    {t('eventDetail.contact')}
-                  </h3>
-                  <p className="text-gray-600 ml-6">{event.tel}</p>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* 설명 */}
-          <div className="mb-8">
-            <h3 className="font-semibold text-gray-700 mb-4 text-lg">{t('eventDetail.detailInfo')}</h3>
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                {event.description}
-              </p>
-            </div>
-          </div>
-          
-          {/* 액션 버튼들 */}
-          <div className="flex justify-center">
+            
             <button 
               onClick={handleShare}
-              className="flex items-center justify-center px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
+              className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
             >
-              <span className="mr-2">🔗</span>
-              {t('eventDetail.share')}
+              <span className="mr-1">🔗</span>
+              공유
             </button>
           </div>
         </div>
       </div>
 
-      {/* 후기 섹션 */}
-      <div className="mt-8 bg-white rounded-lg shadow-lg p-8">
+      {/* 후기 메인 섹션 */}
+      <div className="bg-white rounded-lg shadow-md p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">
-            {t('eventDetail.reviewCount')} ({eventReviews?.filter(review => review.eventId === event.id).length || 0})
-          </h2>
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-1">
+              방문 후기
+            </h2>
+            <p className="text-gray-500">
+              총 {eventReviews?.filter(review => review.eventId === event.id).length || 0}개의 후기가 있습니다
+            </p>
+          </div>
           {user && (
             <button
               onClick={() => setShowReviewForm(!showReviewForm)}
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors font-medium text-lg shadow-sm"
             >
-              {showReviewForm ? t('button.cancel') : t('eventDetail.writeReview')}
+              {showReviewForm ? '취소' : '후기 작성하기'}
             </button>
           )}
         </div>
 
         {/* 후기 작성 폼 */}
         {showReviewForm && (
-          <div className="bg-gray-50 rounded-lg p-6 mb-6">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('eventDetail.reviewForm.title')}</h3>
             <form onSubmit={handleReviewSubmit} className="space-y-4">
               {/* 평점 선택 */}
@@ -491,18 +456,20 @@ export const EventDetail = () => {
           ) : (
             <>
               {(eventReviews?.filter(review => review.eventId === event.id).length || 0) === 0 ? (
-                <div className="text-center py-12">
-                  <div className="text-6xl mb-4">💬</div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {t('eventDetail.noReviews.title')}
+                <div className="text-center py-16">
+                  <div className="text-8xl mb-6">💬</div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">
+                    첫 번째 후기를 작성해보세요!
                   </h3>
-                  <p className="text-gray-600 mb-4">
-                    {t('eventDetail.noReviews.subtitle')}
+                  <p className="text-gray-600 mb-6 text-lg">
+                    다른 방문자들에게 도움이 되는 소중한 후기를 남겨주세요.
                   </p>
                   {!user && (
-                    <p className="text-sm text-gray-500">
-                      {t('eventDetail.noReviews.loginRequired')}
-                    </p>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                      <p className="text-blue-700 font-medium">
+                        후기 작성을 위해 로그인이 필요합니다
+                      </p>
+                    </div>
                   )}
                 </div>
               ) : (

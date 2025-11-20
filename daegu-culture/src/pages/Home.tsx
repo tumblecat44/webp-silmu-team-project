@@ -214,24 +214,12 @@ export const Home = () => {
                 {event.title}
               </h3>
               
-              <div className="space-y-1 text-sm text-gray-600 mb-3">
-                <div className="flex items-center">
-                  <span className="mr-1">📅</span>
-                  <span className="truncate">{event.date}</span>
-                </div>
+              <div className="space-y-1 text-sm text-gray-600 mb-4">
                 <div className="flex items-center">
                   <span className="mr-1">📍</span>
                   <span className="truncate">{event.place}</span>
                 </div>
-                <div className="flex items-center">
-                  <span className="mr-1">💰</span>
-                  <span className="font-medium text-blue-600">{event.price}</span>
-                </div>
               </div>
-              
-              <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                {event.description}
-              </p>
               
               <button 
                 onClick={(e) => {
