@@ -45,7 +45,7 @@ class AuthService {
       // 사용자 프로필 문서 생성/업데이트
       await this.createOrUpdateUserProfile(user);
 
-      toast.success('로그인되었습니다!');
+      // 토스트 메시지는 LoginModal에서 처리하므로 여기서는 제거
       return user;
     } catch (error: any) {
       console.error('Google 로그인 실패:', error);

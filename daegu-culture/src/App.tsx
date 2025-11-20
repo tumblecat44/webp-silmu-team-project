@@ -114,7 +114,8 @@ function Navigation() {
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
         onLoginSuccess={() => {
-          // 로그인 성공 후 필요한 추가 작업
+          // 로그인 성공 후 모달 닫기
+          setShowLoginModal(false);
         }}
       />
     </nav>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { authService } from '../../services/auth';
@@ -13,31 +13,58 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
+  // ESC 키로 모달 닫기 - hooks는 항상 같은 순서로 호출되어야 함
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+    // body 스크롤 비활성화
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleEscKey);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
+  // 모달이 열려있지 않으면 아무것도 렌더링하지 않음
   if (!isOpen) return null;
 
   const handleGoogleLogin = async () => {
     try {
       setLoading(true);
-      const result = await authService.signInWithGoogle();
+      const user = await authService.signInWithGoogle();
       
-      if (result.success) {
-        toast.success('로그인되었습니다');
+      // 로그인 성공
+      if (user) {
+        toast.success('로그인 성공했습니다!');
         onLoginSuccess();
         onClose();
-      } else {
-        toast.error(result.error || '로그인에 실패했습니다');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('로그인 오류:', error);
-      toast.error('로그인에 실패했습니다');
+      toast.error(error.message || '로그인에 실패했습니다!');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
+    <div 
+      className="fixed inset-0 flex items-center justify-center z-50 p-4"
+      style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', backdropFilter: 'blur(3px)' }}
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-lg border border-gray-300 shadow-2xl max-w-md w-full"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-6">
           {/* 헤더 */}
           <div className="flex justify-between items-center mb-6">
