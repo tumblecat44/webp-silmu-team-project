@@ -44,6 +44,8 @@ export const MyPage = () => {
   const handleDeleteReview = async (reviewId: string, imageUrls?: string[]) => {
     if (window.confirm('정말로 이 후기를 삭제하시겠습니까?')) {
       await deleteReview(reviewId, imageUrls);
+      // 삭제 완료 후 목록 다시 조회
+      await refreshReviews();
     }
   };
 
