@@ -193,12 +193,17 @@ export const Home = () => {
             <div className="p-4">
               <div className="flex items-center mb-2">
                 <span className={`px-2 py-1 rounded text-xs font-medium ${
-                  event.category === 'performance' ? 'bg-purple-100 text-purple-800' :
-                  event.category === 'exhibition' ? 'bg-green-100 text-green-800' :
-                  'bg-orange-100 text-orange-800'
+                  event.category === 'tourist' ? 'bg-blue-100 text-blue-800' :
+                  event.category === 'culture' ? 'bg-green-100 text-green-800' :
+                  event.category === 'festival' ? 'bg-purple-100 text-purple-800' :
+                  event.category === 'travel' ? 'bg-orange-100 text-orange-800' :
+                  'bg-gray-100 text-gray-800'
                 }`}>
-                  {event.category === 'performance' ? t('category.performance') :
-                   event.category === 'exhibition' ? t('category.exhibition') : t('category.festival')}
+                  {event.category === 'tourist' ? t('category.tourist') :
+                   event.category === 'culture' ? t('category.culture') :
+                   event.category === 'festival' ? t('category.festival') :
+                   event.category === 'travel' ? t('category.travel') :
+                   t('category.festival')}
                 </span>
                 <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
                   {t('home.dataSource')}
