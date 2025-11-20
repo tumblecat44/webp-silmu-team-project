@@ -17,7 +17,6 @@ export const EventDetail = () => {
   
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewForm, setReviewForm] = useState({
     rating: 5,
@@ -114,11 +113,6 @@ export const EventDetail = () => {
     fetchEvent();
   }, [id, navigate]);
 
-  const handleBookmark = () => {
-    // TODO: Firebase 인증과 연결 후 구현
-    toast.success(isBookmarked ? '북마크가 해제되었습니다' : '북마크에 추가되었습니다');
-    setIsBookmarked(!isBookmarked);
-  };
 
   const handleShare = async () => {
     try {
@@ -213,7 +207,7 @@ export const EventDetail = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-          <p className="mt-2">행사 정보를 불러오는 중...</p>
+          <p className="mt-2">{t('eventDetail.loading')}</p>
         </div>
       </div>
     );
@@ -223,12 +217,12 @@ export const EventDetail = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">행사를 찾을 수 없습니다</h1>
+          <h1 className="text-2xl font-bold mb-4">{t('eventDetail.notFound')}</h1>
           <button 
             onClick={() => navigate('/')}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
           >
-            홈으로 돌아가기
+            {t('eventDetail.backToHome')}
           </button>
         </div>
       </div>
@@ -238,13 +232,13 @@ export const EventDetail = () => {
   const getCategoryLabel = (category: string) => {
     switch (category) {
       case 'performance':
-        return '공연';
+        return t('category.performance');
       case 'exhibition':
-        return '전시';
+        return t('category.exhibition');
       case 'festival':
-        return '축제';
+        return t('category.festival');
       default:
-        return '행사';
+        return t('category.all');
     }
   };
 
@@ -269,7 +263,7 @@ export const EventDetail = () => {
         className="mb-6 flex items-center text-gray-600 hover:text-gray-900 transition-colors"
       >
         <span className="mr-2">←</span>
-        뒤로가기
+        {t('eventDetail.back')}
       </button>
 
       <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -282,11 +276,11 @@ export const EventDetail = () => {
               className="w-full h-full object-cover"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
-                e.currentTarget.parentElement!.innerHTML = '<span class="text-gray-500 text-lg">📷 이미지</span>';
+                e.currentTarget.parentElement!.innerHTML = `<span class="text-gray-500 text-lg">📷 ${t('home.imageAlt')}</span>`;
               }}
             />
           ) : (
-            <span className="text-gray-500 text-lg">📷 이미지</span>
+            <span className="text-gray-500 text-lg">📷 {t('home.imageAlt')}</span>
           )}
           
           {/* 카테고리 뱃지 */}
@@ -309,14 +303,14 @@ export const EventDetail = () => {
               <div>
                 <h3 className="flex items-center font-semibold text-gray-700 mb-2">
                   <span className="mr-2">📅</span>
-                  날짜
+                  {t('eventDetail.date')}
                 </h3>
                 <p className="text-gray-600 ml-6">{event.date}</p>
               </div>
               <div>
                 <h3 className="flex items-center font-semibold text-gray-700 mb-2">
                   <span className="mr-2">📍</span>
-                  장소
+                  {t('eventDetail.location')}
                 </h3>
                 <p className="text-gray-600 ml-6">{event.place}</p>
               </div>
@@ -325,7 +319,7 @@ export const EventDetail = () => {
               <div>
                 <h3 className="flex items-center font-semibold text-gray-700 mb-2">
                   <span className="mr-2">💰</span>
-                  가격
+                  {t('eventDetail.price')}
                 </h3>
                 <p className="text-gray-600 ml-6 font-medium">{event.price}</p>
               </div>
@@ -333,7 +327,7 @@ export const EventDetail = () => {
                 <div>
                   <h3 className="flex items-center font-semibold text-gray-700 mb-2">
                     <span className="mr-2">📞</span>
-                    연락처
+                    {t('eventDetail.contact')}
                   </h3>
                   <p className="text-gray-600 ml-6">{event.tel}</p>
                 </div>
@@ -343,7 +337,7 @@ export const EventDetail = () => {
           
           {/* 설명 */}
           <div className="mb-8">
-            <h3 className="font-semibold text-gray-700 mb-4 text-lg">상세 정보</h3>
+            <h3 className="font-semibold text-gray-700 mb-4 text-lg">{t('eventDetail.detailInfo')}</h3>
             <div className="bg-gray-50 p-6 rounded-lg">
               <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
                 {event.description}
@@ -352,24 +346,13 @@ export const EventDetail = () => {
           </div>
           
           {/* 액션 버튼들 */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <button 
-              onClick={handleBookmark}
-              className={`flex items-center justify-center px-6 py-3 rounded-lg font-medium transition-colors ${
-                isBookmarked 
-                  ? 'bg-red-500 hover:bg-red-600 text-white' 
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-              }`}
-            >
-              <span className="mr-2">{isBookmarked ? '❤️' : '🔖'}</span>
-              {isBookmarked ? '북마크 해제' : '북마크 추가'}
-            </button>
+          <div className="flex justify-center">
             <button 
               onClick={handleShare}
               className="flex items-center justify-center px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-medium transition-colors"
             >
               <span className="mr-2">🔗</span>
-              공유하기
+              {t('eventDetail.share')}
             </button>
           </div>
         </div>
@@ -379,14 +362,14 @@ export const EventDetail = () => {
       <div className="mt-8 bg-white rounded-lg shadow-lg p-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            후기 ({eventReviews?.filter(review => review.eventId === event.id).length || 0})
+            {t('eventDetail.reviewCount')} ({eventReviews?.filter(review => review.eventId === event.id).length || 0})
           </h2>
           {user && (
             <button
               onClick={() => setShowReviewForm(!showReviewForm)}
               className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors"
             >
-              {showReviewForm ? '취소' : '후기 작성'}
+              {showReviewForm ? t('button.cancel') : t('eventDetail.writeReview')}
             </button>
           )}
         </div>
@@ -394,12 +377,12 @@ export const EventDetail = () => {
         {/* 후기 작성 폼 */}
         {showReviewForm && (
           <div className="bg-gray-50 rounded-lg p-6 mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">후기 작성</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('eventDetail.reviewForm.title')}</h3>
             <form onSubmit={handleReviewSubmit} className="space-y-4">
               {/* 평점 선택 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  평점
+                  {t('eventDetail.reviewForm.rating')}
                 </label>
                 <div className="flex items-center space-x-1">
                   {[1, 2, 3, 4, 5].map((rating) => (
@@ -425,26 +408,26 @@ export const EventDetail = () => {
               {/* 후기 내용 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  후기 내용 (최소 10자)
+                  {t('eventDetail.reviewForm.content')}
                 </label>
                 <textarea
                   value={reviewForm.content}
                   onChange={(e) => setReviewForm(prev => ({ ...prev, content: e.target.value }))}
-                  placeholder="행사에 대한 후기를 작성해주세요..."
+                  placeholder={t('eventDetail.reviewForm.contentPlaceholder')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={4}
                   required
                   minLength={10}
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  {reviewForm.content.length}/500 (최소 10자 필요)
+                  {reviewForm.content.length}/500 ({t('eventDetail.reviewForm.minLength')})
                 </p>
               </div>
 
               {/* 이미지 업로드 */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  사진 첨부 (최대 3장)
+                  {t('eventDetail.reviewForm.images')}
                 </label>
                 <input
                   type="file"
@@ -484,14 +467,14 @@ export const EventDetail = () => {
                   onClick={() => setShowReviewForm(false)}
                   className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
                 >
-                  취소
+                  {t('eventDetail.reviewForm.cancel')}
                 </button>
                 <button
                   type="submit"
                   disabled={reviewForm.content.trim().length < 10}
                   className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg transition-colors"
                 >
-                  후기 등록
+                  {t('eventDetail.reviewForm.submit')}
                 </button>
               </div>
             </form>
@@ -503,7 +486,7 @@ export const EventDetail = () => {
           {reviewsLoading ? (
             <div className="text-center py-8">
               <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-              <p className="mt-2 text-gray-500">후기를 불러오는 중...</p>
+              <p className="mt-2 text-gray-500">{t('eventDetail.reviewsLoading')}</p>
             </div>
           ) : (
             <>
@@ -511,14 +494,14 @@ export const EventDetail = () => {
                 <div className="text-center py-12">
                   <div className="text-6xl mb-4">💬</div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    아직 후기가 없습니다
+                    {t('eventDetail.noReviews.title')}
                   </h3>
                   <p className="text-gray-600 mb-4">
-                    이 행사에 대한 첫 번째 후기를 작성해보세요
+                    {t('eventDetail.noReviews.subtitle')}
                   </p>
                   {!user && (
                     <p className="text-sm text-gray-500">
-                      후기 작성을 하려면 로그인이 필요합니다
+                      {t('eventDetail.noReviews.loginRequired')}
                     </p>
                   )}
                 </div>

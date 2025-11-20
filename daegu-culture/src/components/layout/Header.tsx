@@ -50,7 +50,7 @@ export const Header = () => {
             
             {user && (
               <Link to="/my-page" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                {t('nav.mypage', '마이페이지')}
+                {t('nav.reviews', '내 후기')}
               </Link>
             )}
             
@@ -115,7 +115,7 @@ export const Header = () => {
                 className="block py-2 text-gray-700 hover:text-blue-600"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {t('nav.mypage', '마이페이지')}
+                {t('nav.reviews', '내 후기')}
               </Link>
             )}
 

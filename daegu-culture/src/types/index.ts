@@ -27,17 +27,6 @@ export interface User {
   createdAt: Timestamp;
 }
 
-// Bookmark 타입 정의
-export interface Bookmark {
-  id: string;
-  userId: string;
-  eventId: string;
-  eventTitle: string;
-  eventImage: string;
-  eventDate: string;
-  category: string;
-  createdAt: Timestamp;
-}
 
 // Review 타입 정의
 export interface Review {

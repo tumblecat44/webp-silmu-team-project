@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { apiService } from '../services/api';
-import type { Event } from '../types';
+import type { Event } from '../services/api';
 
 
 export const Home = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [events, setEvents] = useState<Event[]>([]);
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [apiStatus, setApiStatus] = useState<string>('');
@@ -31,6 +33,7 @@ export const Home = () => {
       
       if (eventsData && eventsData.length > 0) {
         setEvents(eventsData);
+        setFilteredEvents(eventsData);
         setApiStatus('✅ 공공데이터 API 연동 성공!');
         setLoading(false);
         return;
@@ -98,8 +101,20 @@ export const Home = () => {
       ];
       
       setEvents(realDaeguEvents);
+      setFilteredEvents(realDaeguEvents);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // 카테고리 필터링 함수
+  const filterEvents = (category: string) => {
+    setSelectedCategory(category);
+    if (category === 'all') {
+      setFilteredEvents(events);
+    } else {
+      const filtered = events.filter(event => event.category === category);
+      setFilteredEvents(filtered);
     }
   };
 
@@ -112,17 +127,17 @@ export const Home = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            대구 문화행사 정보
+            {t('home.title')}
           </h1>
           <p className="text-lg text-gray-600">
-            한국관광공사 공공데이터에서 실시간으로 불러오는 중...
+            {t('home.loadingTitle')}
           </p>
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4"></div>
-            <p className="text-gray-500">{apiStatus || '공공데이터 API에서 행사 정보를 불러오는 중...'}</p>
+            <p className="text-gray-500">{apiStatus || t('home.loading')}</p>
           </div>
         </div>
       </div>
@@ -133,11 +148,11 @@ export const Home = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          대구 문화행사 정보
+          {t('home.title')}
         </h1>
         <div className="space-y-2">
           <p className="text-lg text-gray-600">
-            한국관광공사 공공데이터포털(data.go.kr) 실시간 연동
+            {t('home.subtitle')}
           </p>
           {apiStatus && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-2xl mx-auto">
@@ -155,7 +170,7 @@ export const Home = () => {
                 onClick={fetchEvents}
                 className="mt-2 bg-orange-100 hover:bg-orange-200 text-orange-800 px-3 py-1 rounded text-sm"
               >
-                API 연결 재시도
+                {t('home.retryButton')}
               </button>
             </div>
           )}
@@ -164,15 +179,51 @@ export const Home = () => {
 
       <div className="mb-6">
         <div className="flex flex-wrap gap-2">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">전체</button>
-          <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">공연</button>
-          <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">전시</button>
-          <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300">축제</button>
+          <button 
+            onClick={() => filterEvents('all')}
+            className={`px-4 py-2 rounded transition-colors ${
+              selectedCategory === 'all' 
+                ? 'bg-blue-500 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {t('category.all')}
+          </button>
+          <button 
+            onClick={() => filterEvents('performance')}
+            className={`px-4 py-2 rounded transition-colors ${
+              selectedCategory === 'performance' 
+                ? 'bg-blue-500 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {t('category.performance')}
+          </button>
+          <button 
+            onClick={() => filterEvents('exhibition')}
+            className={`px-4 py-2 rounded transition-colors ${
+              selectedCategory === 'exhibition' 
+                ? 'bg-blue-500 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {t('category.exhibition')}
+          </button>
+          <button 
+            onClick={() => filterEvents('festival')}
+            className={`px-4 py-2 rounded transition-colors ${
+              selectedCategory === 'festival' 
+                ? 'bg-blue-500 text-white' 
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}
+          >
+            {t('category.festival')}
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {events.map((event) => (
+        {filteredEvents.map((event) => (
           <div 
             key={event.id} 
             onClick={() => navigate(`/events/${event.id}`)}
@@ -186,11 +237,11 @@ export const Home = () => {
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
-                    e.currentTarget.parentElement!.innerHTML = '<span class="text-gray-500">📷 이미지</span>';
+                    e.currentTarget.parentElement!.innerHTML = `<span class="text-gray-500">📷 ${t('home.imageAlt')}</span>`;
                   }}
                 />
               ) : (
-                <span className="text-gray-500">📷 이미지</span>
+                <span className="text-gray-500">📷 {t('home.imageAlt')}</span>
               )}
             </div>
             
@@ -201,11 +252,11 @@ export const Home = () => {
                   event.category === 'exhibition' ? 'bg-green-100 text-green-800' :
                   'bg-orange-100 text-orange-800'
                 }`}>
-                  {event.category === 'performance' ? '공연' :
-                   event.category === 'exhibition' ? '전시' : '축제'}
+                  {event.category === 'performance' ? t('category.performance') :
+                   event.category === 'exhibition' ? t('category.exhibition') : t('category.festival')}
                 </span>
                 <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                  공공데이터
+                  {t('home.dataSource')}
                 </span>
               </div>
               
@@ -232,33 +283,25 @@ export const Home = () => {
                 {event.description}
               </p>
               
-              <div className="flex gap-2">
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    navigate(`/events/${event.id}`);
-                  }}
-                  className="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-3 rounded transition-colors"
-                >
-                  자세히 보기
-                </button>
-                <button 
-                  onClick={(e) => e.stopPropagation()}
-                  className="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-2 rounded transition-colors"
-                >
-                  🔖
-                </button>
-              </div>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/events/${event.id}`);
+                }}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-3 rounded transition-colors"
+              >
+                {t('home.viewDetails')}
+              </button>
             </div>
           </div>
         ))}
       </div>
 
       <div className="mt-8 text-center text-sm text-gray-500 space-y-1">
-        <p>💡 <strong>공공데이터포털 API 다중 연동 프로젝트</strong></p>
-        <p>🔗 API 엔드포인트: searchFestival2, areaBasedList2, searchKeyword2</p>
-        <p>데이터 제공: 한국관광공사 | 출처: 공공데이터포털(data.go.kr)</p>
-        <p className="text-xs">실시간 API 연결 시도 후 안정적인 대구 행사 정보 제공</p>
+        <p>💡 <strong>{t('home.apiProject')}</strong></p>
+        <p>🔗 {t('home.apiEndpoints')}</p>
+        <p>{t('home.dataProvider')}</p>
+        <p className="text-xs">{t('home.apiDescription')}</p>
       </div>
     </div>
   );

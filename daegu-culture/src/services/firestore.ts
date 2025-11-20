@@ -22,126 +22,13 @@ import {
   deleteObject 
 } from 'firebase/storage';
 import { db, storage } from '../firebase';
-import type { Event, Review, Bookmark } from '../types';
+import type { Event, Review } from '../types';
 import toast from 'react-hot-toast';
 
 // 타입 정의
 
 
 class FirestoreService {
-  // === 북마크 CRUD ===
-
-  // 북마크 추가
-  async addBookmark(userId: string, event: Event): Promise<void> {
-    try {
-      const bookmarkData: Omit<Bookmark, 'id'> = {
-        userId,
-        eventId: event.id,
-        eventTitle: event.title,
-        eventImage: event.image || '',
-        eventDate: event.date,
-        category: event.category,
-        createdAt: serverTimestamp() as Timestamp,
-      };
-
-      await addDoc(collection(db, 'bookmarks'), bookmarkData);
-      toast.success('북마크에 추가되었습니다');
-    } catch (error) {
-      console.error('북마크 추가 실패:', error);
-      toast.error('북마크 추가에 실패했습니다');
-      throw error;
-    }
-  }
-
-  // 사용자의 모든 북마크 조회
-  async getUserBookmarks(userId: string): Promise<Bookmark[]> {
-    try {
-      const q = query(
-        collection(db, 'bookmarks'),
-        where('userId', '==', userId),
-        orderBy('createdAt', 'desc')
-      );
-
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Bookmark));
-    } catch (error) {
-      console.error('북마크 조회 실패:', error);
-      throw error;
-    }
-  }
-
-  // 특정 이벤트가 북마크되어 있는지 확인
-  async isBookmarked(userId: string, eventId: string): Promise<boolean> {
-    try {
-      const q = query(
-        collection(db, 'bookmarks'),
-        where('userId', '==', userId),
-        where('eventId', '==', eventId),
-        limit(1)
-      );
-
-      const querySnapshot = await getDocs(q);
-      return !querySnapshot.empty;
-    } catch (error) {
-      console.error('북마크 확인 실패:', error);
-      return false;
-    }
-  }
-
-  // 북마크 삭제 (이벤트 ID로)
-  async removeBookmarkByEventId(userId: string, eventId: string): Promise<void> {
-    try {
-      const q = query(
-        collection(db, 'bookmarks'),
-        where('userId', '==', userId),
-        where('eventId', '==', eventId)
-      );
-
-      const querySnapshot = await getDocs(q);
-      
-      for (const docSnapshot of querySnapshot.docs) {
-        await deleteDoc(docSnapshot.ref);
-      }
-
-      toast.success('북마크가 삭제되었습니다');
-    } catch (error) {
-      console.error('북마크 삭제 실패:', error);
-      toast.error('북마크 삭제에 실패했습니다');
-      throw error;
-    }
-  }
-
-  // 북마크 삭제 (북마크 ID로)
-  async removeBookmark(bookmarkId: string): Promise<void> {
-    try {
-      await deleteDoc(doc(db, 'bookmarks', bookmarkId));
-      toast.success('북마크가 삭제되었습니다');
-    } catch (error) {
-      console.error('북마크 삭제 실패:', error);
-      toast.error('북마크 삭제에 실패했습니다');
-      throw error;
-    }
-  }
-
-  // 특정 이벤트의 북마크 수 조회
-  async getBookmarkCount(eventId: string): Promise<number> {
-    try {
-      const q = query(
-        collection(db, 'bookmarks'),
-        where('eventId', '==', eventId)
-      );
-
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.size;
-    } catch (error) {
-      console.error('북마크 수 조회 실패:', error);
-      return 0;
-    }
-  }
-
   // === 후기 CRUD ===
 
   // 후기 작성
@@ -336,24 +223,6 @@ class FirestoreService {
   }
 
   // === 실시간 리스너 ===
-
-  // 사용자 북마크 실시간 리스너
-  subscribeToUserBookmarks(userId: string, callback: (bookmarks: Bookmark[]) => void) {
-    const q = query(
-      collection(db, 'bookmarks'),
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc')
-    );
-
-    return onSnapshot(q, (querySnapshot) => {
-      const bookmarks = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Bookmark));
-      
-      callback(bookmarks);
-    });
-  }
 
   // 이벤트 후기 실시간 리스너
   subscribeToEventReviews(eventId: string, callback: (reviews: Review[]) => void) {
