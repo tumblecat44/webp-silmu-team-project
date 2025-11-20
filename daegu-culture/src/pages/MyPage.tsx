@@ -1,14 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
 import { useReviews } from '../hooks/useReviews';
+import { EditReviewModal } from '../components/review/EditReviewModal';
+import type { Review } from '../types';
 
 export const MyPage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { userReviews, loading: reviewsLoading, deleteReview } = useReviews();
+  const { userReviews, loading: reviewsLoading, deleteReview, updateReview, refreshReviews } = useReviews();
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
 
   useEffect(() => {
     // 로그인하지 않은 사용자는 홈으로 리디렉션
@@ -41,6 +44,17 @@ export const MyPage = () => {
   const handleDeleteReview = async (reviewId: string, imageUrls?: string[]) => {
     if (window.confirm('정말로 이 후기를 삭제하시겠습니까?')) {
       await deleteReview(reviewId, imageUrls);
+    }
+  };
+
+  const handleUpdateReview = async (reviewId: string, updates: { rating: number; content: string }) => {
+    try {
+      await updateReview(reviewId, updates);
+      setEditingReview(null);
+      // 수정 완료 후 목록 다시 조회
+      await refreshReviews();
+    } catch (error) {
+      console.error('후기 수정 실패:', error);
     }
   };
 
@@ -120,7 +134,7 @@ export const MyPage = () => {
                     </div>
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => {/* TODO: 수정 기능 */}}
+                        onClick={() => setEditingReview(review)}
                         className="text-blue-600 hover:text-blue-800 text-sm"
                       >
                         {t('button.edit')}
@@ -164,6 +178,16 @@ export const MyPage = () => {
           </div>
         )}
       </div>
+
+      {/* 후기 수정 모달 */}
+      {editingReview && (
+        <EditReviewModal
+          isOpen={!!editingReview}
+          onClose={() => setEditingReview(null)}
+          review={editingReview}
+          onUpdate={handleUpdateReview}
+        />
+      )}
     </div>
   );
 };

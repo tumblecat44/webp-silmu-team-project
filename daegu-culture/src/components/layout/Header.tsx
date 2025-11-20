@@ -36,7 +36,7 @@ export const Header = () => {
   
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div className="container mx-auto px-4">
+      <div className="container px-4 mx-auto">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-2">
             <div className="text-2xl font-bold text-blue-600">
@@ -44,13 +44,13 @@ export const Header = () => {
             </div>
           </Link>
           
-          <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+          <div className="items-center hidden space-x-6 md:flex">
+            <Link to="/" className="font-medium text-gray-700 transition-colors hover:text-blue-600">
               {t('nav.home', '홈')}
             </Link>
             
             {user && (
-              <Link to="/my-page" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+              <Link to="/my-page" className="font-medium text-gray-700 transition-colors hover:text-blue-600">
                 {t('nav.reviews', '내 후기')}
               </Link>
             )}
@@ -87,7 +87,7 @@ export const Header = () => {
           
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2"
+            className="p-2 md:hidden"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -101,7 +101,7 @@ export const Header = () => {
         </div>
         
         {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 space-y-2">
+          <div className="py-4 space-y-2 border-t border-gray-200 md:hidden">
             <Link 
               to="/" 
               className="block py-2 text-gray-700 hover:text-blue-600"
@@ -125,7 +125,7 @@ export const Header = () => {
                 toggleLanguage();
                 setIsMobileMenuOpen(false);
               }}
-              className="block w-full text-left py-2 text-gray-700 hover:text-blue-600"
+              className="block w-full py-2 text-left text-gray-700 hover:text-blue-600"
             >
               {i18n.language === 'ko' ? '🇺🇸 English' : '🇰🇷 한국어'}
             </button>
@@ -133,7 +133,7 @@ export const Header = () => {
             <div className="pt-2 border-t border-gray-100">
               {user ? (
                 <div className="space-y-2">
-                  <div className="flex items-center space-x-2 py-2">
+                  <div className="flex items-center py-2 space-x-2">
                     {user.photoURL && (
                       <img
                         src={user.photoURL}
@@ -148,7 +148,7 @@ export const Header = () => {
                       setIsMobileMenuOpen(false);
                       handleLogout();
                     }}
-                    className="block w-full text-left py-2 text-gray-700 hover:text-blue-600"
+                    className="block w-full py-2 text-left text-gray-700 hover:text-blue-600"
                   >
                     {t('nav.logout', '로그아웃')}
                   </button>
@@ -159,7 +159,7 @@ export const Header = () => {
                     handleLogin();
                     setIsMobileMenuOpen(false);
                   }}
-                  className="block w-full text-left py-2 text-blue-600 font-medium"
+                  className="block w-full py-2 font-medium text-left text-blue-600"
                 >
                   {t('nav.login', '로그인')}
                 </button>
