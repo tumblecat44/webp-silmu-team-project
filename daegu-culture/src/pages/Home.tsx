@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { apiService } from '../services/api';
-import type { Event } from '../services/api';
+import type { Event } from '../types';
 
 
 export const Home = () => {

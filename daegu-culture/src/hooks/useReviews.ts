@@ -19,10 +19,11 @@ interface UpdateReviewParams {
 
 interface UseReviewsReturn {
   reviews: Review[];
+  userReviews: Review[];
   loading: boolean;
   createReview: (params: CreateReviewParams) => Promise<void>;
   updateReview: (reviewId: string, params: UpdateReviewParams) => Promise<void>;
-  deleteReview: (reviewId: string) => Promise<void>;
+  deleteReview: (reviewId: string, imageUrls?: string[]) => Promise<void>;
   getEventReviews: (eventId: string) => Promise<Review[]>;
   getUserReviews: () => Promise<Review[]>;
   refreshReviews: () => Promise<void>;
@@ -197,6 +198,7 @@ export const useReviews = (eventId?: string): UseReviewsReturn => {
 
   return {
     reviews,
+    userReviews: reviews,
     loading,
     createReview,
     updateReview,

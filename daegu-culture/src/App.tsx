@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import './i18n';
 
 function Navigation() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { user, logout } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -28,6 +29,8 @@ function Navigation() {
   const handleAuthAction = async () => {
     if (user) {
       await logout();
+      navigate('/'); // 홈으로 이동
+      window.location.reload(); // 새로고침 추가
     } else {
       setShowLoginModal(true);
     }
@@ -52,16 +55,18 @@ function Navigation() {
               >
                 {t('nav.home')}
               </Link>
-              <Link
-                to="/my-page"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  isActive('/my-page') 
-                    ? 'bg-blue-100 text-blue-700' 
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                }`}
-              >
-                {t('nav.mypage')}
-              </Link>
+              {user && (
+                <Link
+                  to="/my-page"
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    isActive('/my-page') 
+                      ? 'bg-blue-100 text-blue-700' 
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                  }`}
+                >
+                  {t('nav.reviews')}
+                </Link>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-4">

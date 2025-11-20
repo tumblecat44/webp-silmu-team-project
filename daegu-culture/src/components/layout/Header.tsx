@@ -28,6 +28,7 @@ export const Header = () => {
     try {
       await logout();
       alert('로그아웃되었습니다.');
+      window.location.reload(); // 새로고침 추가
     } catch (error) {
       console.error('로그아웃 실패:', error);
     }
@@ -144,8 +145,8 @@ export const Header = () => {
                   </div>
                   <button
                     onClick={() => {
-                      handleLogout();
                       setIsMobileMenuOpen(false);
+                      handleLogout();
                     }}
                     className="block w-full text-left py-2 text-gray-700 hover:text-blue-600"
                   >

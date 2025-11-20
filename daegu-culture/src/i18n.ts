@@ -122,6 +122,9 @@ const resources = {
       'eventDetail.noReviews.loginRequired': '후기 작성을 하려면 로그인이 필요합니다',
       'eventDetail.reviewsLoading': '후기를 불러오는 중...',
 
+      // Common
+      'common.user': '사용자',
+
       // MyPage
       'myPage.title': '님',
       'myPage.loginRequired': '로그인이 필요합니다',
@@ -262,6 +265,9 @@ const resources = {
       'eventDetail.noReviews.subtitle': 'Be the first to write a review for this event',
       'eventDetail.noReviews.loginRequired': 'Login required to write a review',
       'eventDetail.reviewsLoading': 'Loading reviews...',
+
+      // Common
+      'common.user': 'User',
 
       // MyPage
       'myPage.title': '',

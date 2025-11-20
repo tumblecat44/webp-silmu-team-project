@@ -208,7 +208,7 @@ class APIService {
         .map((item: APIEvent) => this.transformAPIEvent(item, 'festival'));
         
     } catch (error) {
-      console.error('이벤트 조회 실패:', error);
+      console.info('일부 API 데이터 조회 실패 (다른 데이터 소스 사용 중):', error);
       throw new Error('행사 정보를 불러오는데 실패했습니다.');
     }
   }
@@ -249,7 +249,7 @@ class APIService {
         });
         
     } catch (error) {
-      console.error('지역 기반 이벤트 조회 실패:', error);
+      console.info('일부 지역 기반 데이터 조회 실패 (다른 데이터 소스 사용 중):', error);
       throw new Error('지역 행사 정보를 불러오는데 실패했습니다.');
     }
   }
@@ -319,7 +319,7 @@ class APIService {
       return this.transformAPIEvent(eventData, category);
       
     } catch (error) {
-      console.error('이벤트 상세 조회 실패:', error);
+      console.info('이벤트 상세 데이터 조회 실패:', error);
       return null;
     }
   }
@@ -374,11 +374,12 @@ class APIService {
       const results = await Promise.allSettled(promises);
       const allEvents: Event[] = [];
       
-      results.forEach((result) => {
+      results.forEach((result, index) => {
         if (result.status === 'fulfilled') {
           allEvents.push(...result.value);
         } else {
-          console.warn('일부 데이터 조회 실패:', result.reason);
+          // 일부 API 실패는 정상 동작 - 다른 데이터 소스는 계속 작동
+          console.info(`데이터 소스 ${index + 1} 조회 실패 (정상 동작):`, result.reason.message || result.reason);
         }
       });
       
@@ -397,7 +398,7 @@ class APIService {
       });
       
     } catch (error) {
-      console.error('통합 이벤트 조회 실패:', error);
+      console.error('모든 데이터 소스 조회 실패:', error);
       throw new Error('행사 정보를 불러오는데 실패했습니다.');
     }
   }

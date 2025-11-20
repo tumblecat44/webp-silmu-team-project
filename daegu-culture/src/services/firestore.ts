@@ -97,15 +97,17 @@ class FirestoreService {
     try {
       const q = query(
         collection(db, 'reviews'),
-        where('userId', '==', userId),
-        orderBy('createdAt', 'desc')
+        where('userId', '==', userId)
       );
 
       const querySnapshot = await getDocs(q);
-      return querySnapshot.docs.map(doc => ({
+      const reviews = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       } as Review));
+      
+      // 클라이언트 사이드에서 생성일 기준으로 정렬
+      return reviews.sort((a, b) => b.createdAt.toMillis() - a.createdAt.toMillis());
     } catch (error) {
       console.error('사용자 후기 조회 실패:', error);
       throw error;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/useAuth';
@@ -74,7 +74,7 @@ export const MyPage = () => {
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             <p className="mt-2 text-gray-500">{t('myPage.reviewsLoading')}</p>
           </div>
-        ) : userReviews.length === 0 ? (
+        ) : !userReviews || userReviews.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-6xl mb-4">✍️</div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
@@ -92,7 +92,7 @@ export const MyPage = () => {
           </div>
         ) : (
           <div className="space-y-6">
-              {userReviews.map((review) => (
+              {(userReviews || []).map((review) => (
                 <div
                   key={review.id}
                   className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
