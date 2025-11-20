@@ -77,6 +77,14 @@ const resources = {
       'message.shareError': '링크 복사에 실패했습니다',
       'message.error': '오류가 발생했습니다',
       'message.noResults': '검색 결과가 없습니다',
+      'message.urlCopied': 'URL이 클립보드에 복사되었습니다',
+      'message.linkCopyFailed': '링크 복사에 실패했습니다',
+      'message.loginRequired': '로그인이 필요합니다',
+      'message.eventNotFound': '행사 정보를 찾을 수 없습니다',
+      'message.reviewMinLength': '후기는 최소 10자 이상 작성해주세요',
+      'message.reviewCreated': '후기가 작성되었습니다',
+      'message.reviewCreateFailed': '후기 작성에 실패했습니다',
+      'message.maxImageLimit': '최대 {{count}}개의 이미지만 업로드할 수 있습니다',
 
       // Empty states
       'empty.noEvents': '행사가 없습니다',
@@ -85,9 +93,9 @@ const resources = {
 
       // Home page
       'home.title': '대구 문화행사 정보',
-      'home.subtitle': '한국관광공사 공공데이터포털(data.go.kr) 실시간 연동',
-      'home.loading': '공공데이터 API에서 행사 정보를 불러오는 중...',
-      'home.loadingTitle': '한국관광공사 공공데이터에서 실시간으로 불러오는 중...',
+      'home.subtitle': '대구 지역의 다양한 문화 행사와 시설 정보를 확인하세요',
+      'home.loading': '데이터를 불러오는 중입니다...',
+      'home.loadingTitle': '잠시만 기다려주세요',
       'home.retryButton': 'API 연결 재시도',
       'home.viewDetails': '자세히 보기',
       'home.imageAlt': '이미지',
@@ -122,6 +130,13 @@ const resources = {
       'eventDetail.noReviews.subtitle': '이 행사에 대한 첫 번째 후기를 작성해보세요',
       'eventDetail.noReviews.loginRequired': '후기 작성을 하려면 로그인이 필요합니다',
       'eventDetail.reviewsLoading': '후기를 불러오는 중...',
+      'eventDetail.reviewsTitle': '방문 후기',
+      'eventDetail.reviewsCount': '총 {{count}}개의 후기가 있습니다',
+      'eventDetail.writeReviewButton': '후기 작성하기',
+      'eventDetail.share': '공유',
+      'eventDetail.noReviewsTitle': '첫 번째 후기를 작성해보세요!',
+      'eventDetail.noReviewsSubtitle': '다른 방문자들에게 도움이 되는 소중한 후기를 남겨주세요.',
+      'eventDetail.loginRequiredForReview': '후기 작성을 위해 로그인이 필요합니다',
 
       // Common
       'common.user': '사용자',
@@ -222,6 +237,14 @@ const resources = {
       'message.shareError': 'Failed to copy link',
       'message.error': 'An error occurred',
       'message.noResults': 'No results found',
+      'message.urlCopied': 'URL copied to clipboard',
+      'message.linkCopyFailed': 'Failed to copy link',
+      'message.loginRequired': 'Login required',
+      'message.eventNotFound': 'Event information not found',
+      'message.reviewMinLength': 'Please write at least 10 characters',
+      'message.reviewCreated': 'Review created successfully',
+      'message.reviewCreateFailed': 'Failed to create review',
+      'message.maxImageLimit': 'You can upload up to {{count}} images',
 
       // Empty states
       'empty.noEvents': 'No events found',
@@ -230,9 +253,9 @@ const resources = {
 
       // Home page
       'home.title': 'Daegu Cultural Events',
-      'home.subtitle': 'Real-time integration with Korea Tourism Organization Public Data Portal (data.go.kr)',
-      'home.loading': 'Loading event information from Public Data API...',
-      'home.loadingTitle': 'Loading real-time data from Korea Tourism Organization Public Data...',
+      'home.subtitle': 'Discover various cultural events and facilities in Daegu',
+      'home.loading': 'Loading data...',
+      'home.loadingTitle': 'Please wait a moment',
       'home.retryButton': 'Retry API Connection',
       'home.viewDetails': 'View Details',
       'home.imageAlt': 'Image',
@@ -267,6 +290,13 @@ const resources = {
       'eventDetail.noReviews.subtitle': 'Be the first to write a review for this event',
       'eventDetail.noReviews.loginRequired': 'Login required to write a review',
       'eventDetail.reviewsLoading': 'Loading reviews...',
+      'eventDetail.reviewsTitle': 'Visit Reviews',
+      'eventDetail.reviewsCount': 'Total {{count}} reviews',
+      'eventDetail.writeReviewButton': 'Write Review',
+      'eventDetail.share': 'Share',
+      'eventDetail.noReviewsTitle': 'Write the first review!',
+      'eventDetail.noReviewsSubtitle': 'Share your valuable review to help other visitors.',
+      'eventDetail.loginRequiredForReview': 'Login required to write a review',
 
       // Common
       'common.user': 'User',

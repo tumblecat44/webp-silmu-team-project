@@ -118,10 +118,10 @@ export const EventDetail = () => {
     try {
       const url = window.location.href;
       await navigator.clipboard.writeText(url);
-      toast.success('URL이 클립보드에 복사되었습니다');
+      toast.success(t('message.urlCopied'));
     } catch (error) {
       console.error('링크 복사 실패:', error);
-      toast.error('링크 복사에 실패했습니다');
+      toast.error(t('message.linkCopyFailed'));
     }
   };
 
@@ -129,17 +129,17 @@ export const EventDetail = () => {
     e.preventDefault();
     
     if (!user) {
-      toast.error('로그인이 필요합니다');
+      toast.error(t('message.loginRequired'));
       return;
     }
 
     if (!event) {
-      toast.error('행사 정보를 찾을 수 없습니다');
+      toast.error(t('message.eventNotFound'));
       return;
     }
 
     if (reviewForm.content.trim().length < 10) {
-      toast.error('후기는 최소 10자 이상 작성해주세요');
+      toast.error(t('message.reviewMinLength'));
       return;
     }
 
@@ -152,7 +152,7 @@ export const EventDetail = () => {
         images: []  // 임시로 빈 배열로 설정 (File[] 타입 문제 해결)
       });
 
-      toast.success('후기가 작성되었습니다');
+      toast.success(t('message.reviewCreated'));
       setShowReviewForm(false);
       setReviewForm({
         rating: 5,
@@ -161,7 +161,7 @@ export const EventDetail = () => {
       });
     } catch (error) {
       console.error('후기 작성 실패:', error);
-      toast.error('후기 작성에 실패했습니다');
+      toast.error(t('message.reviewCreateFailed'));
     }
   };
 
@@ -171,7 +171,7 @@ export const EventDetail = () => {
 
     const maxFiles = 3;
     if (files.length > maxFiles) {
-      toast.error(`최대 ${maxFiles}개의 이미지만 업로드할 수 있습니다`);
+      toast.error(t('message.maxImageLimit', { count: maxFiles }));
       return;
     }
 
@@ -232,15 +232,15 @@ export const EventDetail = () => {
   const getCategoryLabel = (category: string) => {
     switch (category) {
       case 'tourist':
-        return t('category.tourist');
+        return '관광지';
       case 'culture':
-        return t('category.culture');
+        return '문화시설';
       case 'festival':
-        return t('category.festival');
+        return '축제공연행사';
       case 'travel':
-        return t('category.travel');
+        return '여행코스';
       default:
-        return t('category.festival');
+        return '축제공연행사';
     }
   };
 
@@ -312,7 +312,7 @@ export const EventDetail = () => {
               className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors"
             >
               <span className="mr-1">🔗</span>
-              공유
+              {t('eventDetail.share')}
             </button>
           </div>
         </div>
@@ -323,10 +323,10 @@ export const EventDetail = () => {
         <div className="flex justify-between items-center mb-6">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-1">
-              방문 후기
+              {t('eventDetail.reviewsTitle')}
             </h2>
             <p className="text-gray-500">
-              총 {eventReviews?.filter(review => review.eventId === event.id).length || 0}개의 후기가 있습니다
+              {t('eventDetail.reviewsCount', { count: eventReviews?.filter(review => review.eventId === event.id).length || 0 })}
             </p>
           </div>
           {user && (
@@ -334,7 +334,7 @@ export const EventDetail = () => {
               onClick={() => setShowReviewForm(!showReviewForm)}
               className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-lg transition-colors font-medium text-lg shadow-sm"
             >
-              {showReviewForm ? '취소' : '후기 작성하기'}
+              {showReviewForm ? t('button.cancel') : t('eventDetail.writeReviewButton')}
             </button>
           )}
         </div>
@@ -459,15 +459,15 @@ export const EventDetail = () => {
                 <div className="text-center py-16">
                   <div className="text-8xl mb-6">💬</div>
                   <h3 className="text-xl font-bold text-gray-900 mb-3">
-                    첫 번째 후기를 작성해보세요!
+                    {t('eventDetail.noReviewsTitle')}
                   </h3>
                   <p className="text-gray-600 mb-6 text-lg">
-                    다른 방문자들에게 도움이 되는 소중한 후기를 남겨주세요.
+                    {t('eventDetail.noReviewsSubtitle')}
                   </p>
                   {!user && (
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
                       <p className="text-blue-700 font-medium">
-                        후기 작성을 위해 로그인이 필요합니다
+                        {t('eventDetail.loginRequiredForReview')}
                       </p>
                     </div>
                   )}

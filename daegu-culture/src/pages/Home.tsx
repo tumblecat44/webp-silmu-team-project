@@ -103,7 +103,7 @@ export const Home = () => {
         <div className="bg-white rounded-lg shadow p-6">
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mb-4"></div>
-            <p className="text-gray-500">{apiStatus || t('home.loading')}</p>
+            <p className="text-gray-500">{t('home.loading')}</p>
           </div>
         </div>
       </div>
@@ -116,41 +116,19 @@ export const Home = () => {
         <h1 className="text-3xl font-bold text-gray-900 mb-4">
           {t('home.title')}
         </h1>
-        <div className="space-y-2">
-          <p className="text-lg text-gray-600">
-            {t('home.subtitle')}
-          </p>
-          {apiStatus && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-2xl mx-auto">
-              <p className="text-blue-600 text-sm font-medium">
-                📡 {apiStatus}
-              </p>
-            </div>
-          )}
-          {error && (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 max-w-2xl mx-auto">
-              <p className="text-orange-600 text-sm">
-                ℹ️ {error}
-              </p>
-              <button 
-                onClick={fetchEvents}
-                className="mt-2 bg-orange-100 hover:bg-orange-200 text-orange-800 px-3 py-1 rounded text-sm"
-              >
-                {t('home.retryButton')}
-              </button>
-            </div>
-          )}
-        </div>
+        <p className="text-lg text-gray-600">
+          {t('home.subtitle')}
+        </p>
       </div>
 
       <div className="mb-6">
         <div className="flex flex-wrap gap-2">
           {[
             { id: 'all', label: t('category.all') },
-            { id: 'tourist', label: '관광지' },
-            { id: 'culture', label: '문화시설' },
-            { id: 'festival', label: '축제공연행사' },
-            { id: 'travel', label: '여행코스' },
+            { id: 'tourist', label: t('category.tourist') },
+            { id: 'culture', label: t('category.culture') },
+            { id: 'festival', label: t('category.festival') },
+            { id: 'travel', label: t('category.travel') },
           ].map(category => (
             <button 
               key={category.id}
@@ -205,9 +183,6 @@ export const Home = () => {
                    event.category === 'travel' ? t('category.travel') :
                    t('category.festival')}
                 </span>
-                <span className="ml-2 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                  {t('home.dataSource')}
-                </span>
               </div>
               
               <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
@@ -228,19 +203,13 @@ export const Home = () => {
                 }}
                 className="w-full bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-3 rounded transition-colors"
               >
-                {t('home.viewDetails')}
+  {t('home.viewDetails')}
               </button>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-8 text-center text-sm text-gray-500 space-y-1">
-        <p>💡 <strong>{t('home.apiProject')}</strong></p>
-        <p>🔗 {t('home.apiEndpoints')}</p>
-        <p>{t('home.dataProvider')}</p>
-        <p className="text-xs">{t('home.apiDescription')}</p>
-      </div>
     </div>
   );
 };
