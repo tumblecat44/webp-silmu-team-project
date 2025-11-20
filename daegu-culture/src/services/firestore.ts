@@ -23,7 +23,6 @@ import {
 } from 'firebase/storage';
 import { db, storage } from '../firebase';
 import type { Event, Review } from '../types';
-import toast from 'react-hot-toast';
 
 // 타입 정의
 
@@ -64,10 +63,9 @@ class FirestoreService {
       };
 
       await addDoc(collection(db, 'reviews'), reviewData);
-      toast.success('후기가 작성되었습니다');
+      // 토스트는 컴포넌트에서 처리
     } catch (error) {
       console.error('후기 작성 실패:', error);
-      toast.error('후기 작성에 실패했습니다');
       throw error;
     }
   }

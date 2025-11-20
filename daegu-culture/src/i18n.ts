@@ -14,9 +14,10 @@ const resources = {
 
       // Categories
       'category.all': '전체',
-      'category.performance': '공연',
-      'category.exhibition': '전시',
-      'category.festival': '축제',
+      'category.tourist': '관광지',
+      'category.culture': '문화시설',
+      'category.festival': '축제공연행사',
+      'category.travel': '여행코스',
 
       // Filter
       'filter.all': '전체',
@@ -158,9 +159,10 @@ const resources = {
 
       // Categories
       'category.all': 'All',
-      'category.performance': 'Performance',
-      'category.exhibition': 'Exhibition',
-      'category.festival': 'Festival',
+      'category.tourist': 'Tourist Attractions',
+      'category.culture': 'Cultural Facilities',
+      'category.festival': 'Festivals & Events',
+      'category.travel': 'Travel Courses',
 
       // Filter
       'filter.all': 'All',

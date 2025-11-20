@@ -220,7 +220,10 @@ class APIService {
     keyword?: string;
   }): Promise<Event[]> {
     try {
-      const searchParams: Record<string, string> = {};
+      const searchParams: Record<string, string> = {
+        areaCode: '4', // 대구광역시 지역코드
+        arrange: 'A' // 제목순 정렬
+      };
       
       if (params?.contentTypeId) {
         searchParams.contentTypeId = params.contentTypeId;
@@ -244,7 +247,9 @@ class APIService {
       return eventsArray
         .filter((item: APIEvent) => item.contentid && item.title)
         .map((item: APIEvent) => {
-          const category = this.getContentTypeCategory(params?.contentTypeId || '');
+          // 실제 API 응답의 contenttypeid 사용
+          const actualContentTypeId = item.contenttypeid || params?.contentTypeId || '';
+          const category = this.getContentTypeCategory(actualContentTypeId);
           return this.transformAPIEvent(item, category);
         });
         
@@ -279,7 +284,9 @@ class APIService {
       return eventsArray
         .filter((item: APIEvent) => item.contentid && item.title)
         .map((item: APIEvent) => {
-          const category = this.getContentTypeCategory(contentTypeId || '');
+          // 실제 API 응답의 contenttypeid 사용 (하드코딩 제거)
+          const actualContentTypeId = item.contenttypeid || contentTypeId || '';
+          const category = this.getContentTypeCategory(actualContentTypeId);
           return this.transformAPIEvent(item, category);
         });
         
@@ -325,63 +332,64 @@ class APIService {
   }
 
   private getContentTypeCategory(contentTypeId: string): Event['category'] {
-    // 한국관광공사 콘텐츠 타입별 분류
+    // 디버깅용 로그
+    console.log('카테고리 매핑 - contentTypeId:', contentTypeId);
+    
+    // 문화행사 관련 콘텐츠 타입별 분류
     switch (contentTypeId) {
-      case '12': // 관광지
-      case '14': // 문화시설
-        return 'exhibition';
-      case '15': // 축제공연행사
+      case '12': // 관광지 (문화유적, 문화관광지)
+        console.log('→ tourist로 매핑');
+        return 'tourist';
+      case '14': // 문화시설 (박물관, 미술관, 공연장)
+        console.log('→ culture로 매핑');
+        return 'culture';
+      case '15': // 축제공연행사 (문화축제, 공연, 행사)
+        console.log('→ festival로 매핑');
         return 'festival';
-      case '32': // 숙박
-      case '38': // 쇼핑
-      case '39': // 음식점
+      case '25': // 여행코스 (문화탐방 코스)
+        console.log('→ travel로 매핑');
+        return 'travel';
       default:
+        console.log('→ 기본값 festival로 매핑 (알 수 없는 contentTypeId)');
         return 'festival'; // 기본값
     }
   }
 
-  // 통합 이벤트 조회 (모든 카테고리)
+  // 통합 이벤트 조회 (문화행사 카테고리)
   async getAllEvents(params?: {
     keyword?: string;
     startDate?: string;
     endDate?: string;
-    category?: 'all' | 'performance' | 'exhibition' | 'festival';
+    category?: 'all' | 'tourist' | 'culture' | 'festival' | 'travel';
   }): Promise<Event[]> {
     try {
-      const promises: Promise<Event[]>[] = [];
-      
-      // 축제/행사 데이터
-      if (!params?.category || params.category === 'all' || params.category === 'festival') {
-        promises.push(
-          this.getEvents({
-            keyword: params?.keyword,
-            eventStartDate: params?.startDate,
-            eventEndDate: params?.endDate,
-          })
-        );
-      }
-      
-      // 문화시설 (전시관 등)
-      if (!params?.category || params.category === 'all' || params.category === 'exhibition') {
-        promises.push(
-          this.getAreaBasedEvents({
-            contentTypeId: '14', // 문화시설
-            keyword: params?.keyword,
-          })
-        );
-      }
-      
-      const results = await Promise.allSettled(promises);
       const allEvents: Event[] = [];
       
-      results.forEach((result, index) => {
-        if (result.status === 'fulfilled') {
-          allEvents.push(...result.value);
-        } else {
-          // 일부 API 실패는 정상 동작 - 다른 데이터 소스는 계속 작동
-          console.info(`데이터 소스 ${index + 1} 조회 실패 (정상 동작):`, result.reason.message || result.reason);
+      // 카테고리별 contentTypeId 매핑
+      const categoryMapping = {
+        tourist: ['12'], // 관광지
+        culture: ['14'], // 문화시설  
+        festival: ['15'], // 축제공연행사
+        travel: ['25'], // 여행코스
+        all: ['12', '14', '15', '25'] // 전체
+      };
+      
+      // 요청된 카테고리에 따라 contentTypeId 결정
+      const targetCategory = params?.category || 'all';
+      const contentTypeIds = categoryMapping[targetCategory];
+      
+      // 각 contentTypeId별로 개별 API 호출
+      for (const contentTypeId of contentTypeIds) {
+        try {
+          const events = await this.getAreaBasedEvents({
+            contentTypeId,
+            keyword: params?.keyword,
+          });
+          allEvents.push(...events);
+        } catch (error) {
+          console.info(`contentTypeId ${contentTypeId} 조회 실패 (다른 데이터는 정상):`, error);
         }
-      });
+      }
       
       // 중복 제거 (contentId 기준)
       const uniqueEvents = allEvents.filter(

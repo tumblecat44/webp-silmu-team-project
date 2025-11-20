@@ -8,7 +8,7 @@ import type { Event } from '../types';
 export const Home = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [events, setEvents] = useState<Event[]>([]);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [filteredEvents, setFilteredEvents] = useState<Event[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [loading, setLoading] = useState(true);
@@ -23,7 +23,7 @@ export const Home = () => {
       
       console.log('API 서비스를 통한 데이터 로딩 시작');
       
-      // API 서비스를 통한 통합 이벤트 조회
+      // API 서비스를 통한 통합 이벤트 조회 - 모든 카테고리 데이터를 한번에 로딩
       setApiStatus('공공데이터 API에서 대구 행사 정보 불러오는 중...');
       const eventsData = await apiService.getAllEvents({
         category: 'all'
@@ -32,7 +32,7 @@ export const Home = () => {
       console.log('API 서비스에서 받은 데이터:', eventsData);
       
       if (eventsData && eventsData.length > 0) {
-        setEvents(eventsData);
+        setAllEvents(eventsData);
         setFilteredEvents(eventsData);
         setApiStatus('✅ 공공데이터 API 연동 성공!');
         setLoading(false);
@@ -44,78 +44,44 @@ export const Home = () => {
       
     } catch (error) {
       console.error('데이터 로딩 실패:', error);
-      setError('공공데이터 API 연결 중 - 실제 대구 행사 정보 표시');
+      setError('API 연결 실패 - 데이터를 불러올 수 없습니다');
       
-      // 실제 대구 지역 행사 정보 (공공데이터 기반)
-      const realDaeguEvents: Event[] = [
-        {
-          id: '1',
-          title: '대구 치맥 페스티벌 2024',
-          category: 'festival',
-          date: '2024년 12월 7일 ~ 12월 10일',
-          place: '두류공원 일대',
-          price: '무료 입장',
-          image: '/placeholder1.jpg',
-          description: '대구의 대표 치킨과 맥주를 맛보는 축제입니다. 다양한 공연과 이벤트가 준비되어 있습니다.'
-        },
-        {
-          id: '2',
-          title: '대구 국제 뮤지컬 페스티벌',
-          category: 'performance',
-          date: '2024년 11월 20일 ~ 12월 15일',
-          place: '대구오페라하우스',
-          price: '30,000원 ~ 80,000원',
-          image: '/placeholder2.jpg',
-          description: '세계적인 뮤지컬 작품들이 한자리에 모이는 국제 뮤지컬 페스티벌입니다.'
-        },
-        {
-          id: '3',
-          title: '대구 현대미술 전시회',
-          category: 'exhibition',
-          date: '2024년 11월 1일 ~ 2025년 1월 31일',
-          place: '대구미술관',
-          price: '무료',
-          image: '/placeholder3.jpg',
-          description: '현대미술의 새로운 흐름을 소개하는 특별 전시회입니다.'
-        },
-        {
-          id: '4',
-          title: '대구 교향악단 정기연주회',
-          category: 'performance',
-          date: '2024년 11월 25일',
-          place: '콘서트하우스',
-          price: '20,000원',
-          image: '/placeholder4.jpg',
-          description: '베토벤 교향곡 9번 합창을 연주합니다.'
-        },
-        {
-          id: '5',
-          title: '대구 한방 박람회',
-          category: 'exhibition',
-          date: '2024년 12월 1일 ~ 12월 5일',
-          place: '엑스코',
-          price: '10,000원',
-          image: '/placeholder5.jpg',
-          description: '전통 한방의학과 현대 의학의 만남을 체험해보세요.'
-        }
-      ];
-      
-      setEvents(realDaeguEvents);
-      setFilteredEvents(realDaeguEvents);
+      // API 실패 시 빈 배열
+      setAllEvents([]);
+      setFilteredEvents([]);
     } finally {
       setLoading(false);
     }
   };
 
-  // 카테고리 필터링 함수
+  // 클라이언트 사이드 카테고리 필터링 함수
   const filterEvents = (category: string) => {
     setSelectedCategory(category);
+    
     if (category === 'all') {
-      setFilteredEvents(events);
-    } else {
-      const filtered = events.filter(event => event.category === category);
-      setFilteredEvents(filtered);
+      setFilteredEvents(allEvents);
+      return;
     }
+    
+    // 카테고리별 매핑
+    const categoryMapping: Record<string, Event['category'][]> = {
+      tourist: ['tourist'],
+      culture: ['culture'],  
+      festival: ['festival'],
+      travel: ['travel']
+    };
+    
+    const targetCategories = categoryMapping[category];
+    if (!targetCategories) {
+      setFilteredEvents(allEvents);
+      return;
+    }
+    
+    const filtered = allEvents.filter(event => 
+      targetCategories.includes(event.category)
+    );
+    
+    setFilteredEvents(filtered);
   };
 
   useEffect(() => {
@@ -179,46 +145,25 @@ export const Home = () => {
 
       <div className="mb-6">
         <div className="flex flex-wrap gap-2">
-          <button 
-            onClick={() => filterEvents('all')}
-            className={`px-4 py-2 rounded transition-colors ${
-              selectedCategory === 'all' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {t('category.all')}
-          </button>
-          <button 
-            onClick={() => filterEvents('performance')}
-            className={`px-4 py-2 rounded transition-colors ${
-              selectedCategory === 'performance' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {t('category.performance')}
-          </button>
-          <button 
-            onClick={() => filterEvents('exhibition')}
-            className={`px-4 py-2 rounded transition-colors ${
-              selectedCategory === 'exhibition' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {t('category.exhibition')}
-          </button>
-          <button 
-            onClick={() => filterEvents('festival')}
-            className={`px-4 py-2 rounded transition-colors ${
-              selectedCategory === 'festival' 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            {t('category.festival')}
-          </button>
+          {[
+            { id: 'all', label: t('category.all') },
+            { id: 'tourist', label: '관광지' },
+            { id: 'culture', label: '문화시설' },
+            { id: 'festival', label: '축제공연행사' },
+            { id: 'travel', label: '여행코스' },
+          ].map(category => (
+            <button 
+              key={category.id}
+              onClick={() => filterEvents(category.id)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                selectedCategory === category.id 
+                  ? 'bg-blue-500 text-white' 
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {category.label}
+            </button>
+          ))}
         </div>
       </div>
 
