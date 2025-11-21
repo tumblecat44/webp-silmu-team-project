@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useReviews } from '../hooks/useReviews';
 import { EditReviewModal } from '../components/review/EditReviewModal';
 import type { Review } from '../types';
+import toast from 'react-hot-toast';
 
 export const MyPage = () => {
   const { t } = useTranslation();
@@ -43,20 +44,28 @@ export const MyPage = () => {
 
   const handleDeleteReview = async (reviewId: string, imageUrls?: string[]) => {
     if (window.confirm('정말로 이 후기를 삭제하시겠습니까?')) {
-      await deleteReview(reviewId, imageUrls);
-      // 삭제 완료 후 목록 다시 조회
-      await refreshReviews();
+      try {
+        await deleteReview(reviewId, imageUrls);
+        toast.success('후기가 삭제되었습니다');
+        // 삭제 완료 후 목록 다시 조회
+        await refreshReviews();
+      } catch (error) {
+        console.error('후기 삭제 실패:', error);
+        toast.error('후기 삭제에 실패했습니다');
+      }
     }
   };
 
   const handleUpdateReview = async (reviewId: string, updates: { rating: number; content: string }) => {
     try {
       await updateReview(reviewId, updates);
+      toast.success('후기가 수정되었습니다');
       setEditingReview(null);
       // 수정 완료 후 목록 다시 조회
       await refreshReviews();
     } catch (error) {
       console.error('후기 수정 실패:', error);
+      toast.error('후기 수정에 실패했습니다');
     }
   };
 

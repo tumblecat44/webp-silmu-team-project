@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { apiService } from '../services/api';
 import type { Event } from '../types';
+import toast from 'react-hot-toast';
 
 
 export const Home = () => {
@@ -35,17 +36,20 @@ export const Home = () => {
         setAllEvents(eventsData);
         setFilteredEvents(eventsData);
         setApiStatus('✅ 공공데이터 API 연동 성공!');
+        toast.success(`${eventsData.length}개의 행사를 불러왔습니다`);
         setLoading(false);
         return;
       } else {
         setApiStatus('🔄 API에서 데이터를 찾을 수 없음 - 샘플 데이터 표시');
         throw new Error('API에서 데이터를 찾을 수 없음');
       }
-      
+
     } catch (error) {
       console.error('데이터 로딩 실패:', error);
-      setError('API 연결 실패 - 데이터를 불러올 수 없습니다');
-      
+      const errorMessage = 'API 연결 실패 - 데이터를 불러올 수 없습니다';
+      setError(errorMessage);
+      toast.error(errorMessage);
+
       // API 실패 시 빈 배열
       setAllEvents([]);
       setFilteredEvents([]);
