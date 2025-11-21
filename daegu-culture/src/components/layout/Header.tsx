@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/useAuth';
 import { Button } from '../common/Button';
+import toast from 'react-hot-toast';
 
 export const Header = () => {
   const { t, i18n } = useTranslation();
@@ -18,19 +19,21 @@ export const Header = () => {
   const handleLogin = async () => {
     try {
       await login();
+      toast.success('로그인되었습니다');
     } catch (error) {
       console.error('로그인 실패:', error);
-      alert('로그인에 실패했습니다.');
+      toast.error('로그인에 실패했습니다');
     }
   };
 
   const handleLogout = async () => {
     try {
       await logout();
-      alert('로그아웃되었습니다.');
+      toast.success('로그아웃되었습니다');
       window.location.reload(); // 새로고침 추가
     } catch (error) {
       console.error('로그아웃 실패:', error);
+      toast.error('로그아웃에 실패했습니다');
     }
   };
   

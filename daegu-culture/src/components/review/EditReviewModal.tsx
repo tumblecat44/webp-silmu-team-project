@@ -34,9 +34,11 @@ export const EditReviewModal = ({ isOpen, onClose, review, onUpdate }: EditRevie
         rating,
         content: content.trim(),
       });
+      toast.success('후기가 수정되었습니다');
       onClose();
     } catch (error) {
       console.error('후기 수정 실패:', error);
+      toast.error('후기 수정에 실패했습니다. 다시 시도해주세요');
     } finally {
       setIsSubmitting(false);
     }
