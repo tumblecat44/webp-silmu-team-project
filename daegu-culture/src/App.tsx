@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
@@ -24,13 +25,23 @@ function Navigation() {
     const newLang = i18n.language === 'ko' ? 'en' : 'ko';
     i18n.changeLanguage(newLang);
     localStorage.setItem('language', newLang);
+    toast.success(newLang === 'ko' ? '한국어로 변경되었습니다' : 'Language changed to English');
   };
 
   const handleAuthAction = async () => {
     if (user) {
-      await logout();
-      navigate('/'); // 홈으로 이동
-      window.location.reload(); // 새로고침 추가
+      try {
+        await logout();
+        toast.success('로그아웃되었습니다');
+        navigate('/'); // 홈으로 이동
+        // 토스트가 보이도록 잠시 대기 후 새로고침
+        setTimeout(() => {
+          window.location.reload();
+        }, 750);
+      } catch (error) {
+        console.error('로그아웃 실패:', error);
+        toast.error('로그아웃에 실패했습니다');
+      }
     } else {
       setShowLoginModal(true);
     }
@@ -139,12 +150,36 @@ function App() {
         </div>
         
         <Toaster
-          position="bottom-center"
+          position="top-center"
           toastOptions={{
             duration: 3000,
             style: {
               background: '#363636',
               color: '#fff',
+              fontSize: '14px',
+              fontWeight: '500',
+              padding: '12px 20px',
+              borderRadius: '8px',
+            },
+            success: {
+              style: {
+                background: '#10b981',
+                color: '#fff',
+              },
+              iconTheme: {
+                primary: '#fff',
+                secondary: '#10b981',
+              },
+            },
+            error: {
+              style: {
+                background: '#ef4444',
+                color: '#fff',
+              },
+              iconTheme: {
+                primary: '#fff',
+                secondary: '#ef4444',
+              },
             },
           }}
         />

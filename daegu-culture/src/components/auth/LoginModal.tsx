@@ -40,7 +40,7 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
     try {
       setLoading(true);
       const user = await authService.signInWithGoogle();
-      
+
       // 로그인 성공
       if (user) {
         toast.success('로그인 성공했습니다!');
@@ -49,7 +49,11 @@ export const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps)
       }
     } catch (error: any) {
       console.error('로그인 오류:', error);
-      toast.error(error.message || '로그인에 실패했습니다!');
+
+      // 팝업이 닫혔을 때는 에러 메시지를 표시하지 않음
+      if (error.message !== '로그인이 취소되었습니다.') {
+        toast.error(error.message || '로그인에 실패했습니다!');
+      }
     } finally {
       setLoading(false);
     }

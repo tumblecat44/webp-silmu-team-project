@@ -14,6 +14,7 @@ export const Header = () => {
     const newLang = i18n.language === 'ko' ? 'en' : 'ko';
     i18n.changeLanguage(newLang);
     localStorage.setItem('language', newLang);
+    toast.success(newLang === 'ko' ? '한국어로 변경되었습니다' : 'Language changed to English');
   };
 
   const handleLogin = async () => {
@@ -22,7 +23,12 @@ export const Header = () => {
       toast.success('로그인되었습니다');
     } catch (error) {
       console.error('로그인 실패:', error);
-      toast.error('로그인에 실패했습니다');
+
+      // 팝업이 닫혔을 때는 에러 메시지를 표시하지 않음
+      const errorMessage = error instanceof Error ? error.message : '로그인에 실패했습니다';
+      if (errorMessage !== '로그인이 취소되었습니다.') {
+        toast.error(errorMessage);
+      }
     }
   };
 
@@ -30,7 +36,10 @@ export const Header = () => {
     try {
       await logout();
       toast.success('로그아웃되었습니다');
-      window.location.reload(); // 새로고침 추가
+      // 토스트가 보이도록 잠시 대기 후 새로고침
+      setTimeout(() => {
+        window.location.reload();
+      }, 750);
     } catch (error) {
       console.error('로그아웃 실패:', error);
       toast.error('로그아웃에 실패했습니다');

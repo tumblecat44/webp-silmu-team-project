@@ -125,7 +125,7 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       await signOut(auth);
-      toast.success('로그아웃되었습니다.');
+      // 토스트 메시지는 호출하는 쪽에서 처리
     } catch (error) {
       console.error('로그아웃 실패:', error);
       throw new Error('로그아웃에 실패했습니다.');
