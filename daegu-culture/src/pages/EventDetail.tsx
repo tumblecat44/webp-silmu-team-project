@@ -165,42 +165,6 @@ export const EventDetail = () => {
     }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    const maxFiles = 3;
-    if (files.length > maxFiles) {
-      toast.error(t('message.maxImageLimit', { count: maxFiles }));
-      return;
-    }
-
-    // 실제 구현에서는 파일을 Firebase Storage에 업로드하고 URL을 받아와야 함
-    // 현재는 임시로 로컬 URL 사용
-    const imageUrls: string[] = [];
-    Array.from(files).forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        imageUrls.push(result);
-        
-        if (imageUrls.length === files.length) {
-          setReviewForm(prev => ({
-            ...prev,
-            images: [...prev.images, ...imageUrls].slice(0, maxFiles)
-          }));
-        }
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const removeImage = (index: number) => {
-    setReviewForm(prev => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index)
-    }));
-  };
 
   if (loading) {
     return (
@@ -400,42 +364,6 @@ export const EventDetail = () => {
                 <p className="text-sm text-gray-500 mt-1">
                   {reviewForm.content.length}/500 ({t('eventDetail.reviewForm.minLength')})
                 </p>
-              </div>
-
-              {/* 이미지 업로드 */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {t('eventDetail.reviewForm.images')}
-                </label>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                />
-                
-                {/* 업로드된 이미지 미리보기 */}
-                {reviewForm.images.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {reviewForm.images.map((image, index) => (
-                      <div key={index} className="relative">
-                        <img
-                          src={image}
-                          alt={`Preview ${index + 1}`}
-                          className="w-20 h-20 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {/* 제출 버튼 */}
